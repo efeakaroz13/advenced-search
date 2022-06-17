@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('headless')
 
 def searchwikipedia(keyword):
 	data = []
@@ -34,18 +36,38 @@ def searchgoogle(keyword):
 
 def searchyandex(keyword):
 	#searchyandex
-	driver = webdriver.Chrome("./chromedriver")
+	out = []
+	
+	driver = webdriver.Chrome("./chromedriver",options=chrome_options)
 
 	driver.get("https://yandex.com.tr/search/?text={}".format(keyword.replace(" ","+")))
-	soup = BeautifulSoup(page.content,"html.parser")
+	soup = BeautifulSoup(driver.page_source,"html.parser")
 	all_li= soup.find_all("li")
+	for l in all_li:
+		try:
+			href = l.find_all("a")[0].get("href")
+			text = l.get_text()
+			data = {
+			"title":text,
+			"url":href
+			}
+			out.insert(0,data)
 
-	return page.content
+		except:
+			pass
 
+
+	return out
 def searchpinterest(keyword):
-	#searchpinterest
+	out = []
+	driver = webdriver.Chrome("./chromedriver",options=chrome_options)
+	driver.get("https://www.pinterest.co.uk/search/pins/?q="+keyword.replace(" ","+"))
+	soup = BeautifulSoup(driver.page_source,"html.parser")
+	images = soup.find_all("img")
+	for i in images:
+		out.insert(0,i.get("src"))
+	return out
 
-	pass
 
 
 def searchtorch(keyword):
@@ -66,4 +88,4 @@ def searchgoogleimages(keyword):
 
 
 
-print(searchyandex("Lana del rey"))
+print(searchpinterest("Lana del rey"))
