@@ -17,7 +17,7 @@ chrome_options.add_argument('headless')
 ALLOUTDATA = {"wikipedia":[],"google":[],"yandex":[],"pinterest":[],"torch":[],"imggoogle":[]}
 
 
-srcsearch= "cars"
+srcsearch= open("keyword.txt","r").read().replace("\n","")
 
 
 def searchwikipedia(keyword):
@@ -38,7 +38,7 @@ def searchgoogle(keyword):
 			try:
 				data = {
 				"title":a.get_text(),
-				"url":a.parent.parent.find_all("a")[0].get("href").replace("/url?q=","")
+				"url":a.parent.parent.find_all("a")[0].get("href").replace("/url?q=","").split("&")[0]
 				}
 				output.insert(0,data)
 			except:
@@ -61,11 +61,14 @@ def searchyandex(keyword):
 		try:
 			href = l.find_all("a")[0].get("href")
 			text = l.get_text()
-			data = {
-			"title":text,
-			"url":href
-			}
-			out.insert(0,data)
+			try:
+				href.split("yandex.com")[1]
+			except:
+				data = {
+				"title":text,
+				"url":href
+				}
+				out.insert(0,data)
 
 		except:
 			pass
@@ -74,7 +77,7 @@ def searchyandex(keyword):
 	return out
 def searchpinterest(keyword):
 	out = []
-	driver = webdriver.Chrome("./chromedriver")
+	driver = webdriver.Chrome("./chromedriver",options=chrome_options)
 	driver.get("https://www.pinterest.com/search/pins/?q="+keyword.replace(" ","+"))
 	time.sleep(3)
 	soup = BeautifulSoup(driver.page_source,"html.parser")
@@ -133,22 +136,29 @@ def searchgoogleimages(keyword):
 
 def all_job():
 	ALLOUTDATA["wikipedia"] = searchwikipedia(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*1)))
 	ALLOUTDATA["google"] = searchgoogle(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*2)))
+
 	
 def all_job_2():
 	ALLOUTDATA["pinterest"] = searchpinterest(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*3)))
 	
 def all_job_3():
 	ALLOUTDATA["imggoogle"] = searchgoogleimages(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*4)))
 	ALLOUTDATA["yandex"] = searchyandex(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*5)))
 	ALLOUTDATA["torch"] = searchtorch(srcsearch)
+	open("per.txt","w").write(str(int((100/6)*6)))
 	
 def write_thing():
 
 	json_object = json.dumps(ALLOUTDATA, indent = 4)
   
 	# Writing to sample.json
-	with open("sample.json", "w") as outfile:
+	with open("data.json", "w") as outfile:
 	    outfile.write(json_object)
 
 

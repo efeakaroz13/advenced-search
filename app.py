@@ -1,33 +1,39 @@
+#RSOR
+
 from flask import Flask,render_template,request,redirect,make_response
 import os
 import subprocess
 import requests
 import wikipedia
 import time
+import json
 from selenium import webdriver
 from bs4 import BeautifulSoup
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('headless')
 app = Flask(__name__)
-@app.route("/")
+
+
+
+@app.route("/view" ,methods=["POST","GET"])
 def index():
-	return render_template("index.html")
+	data = json.loads(open("data.json","r").read())
+
+	return render_template("index.html",data=data)
 
 
-@app.route("/pin")
-def pin():
-	def searchpinterest(keyword):
-		driver = webdriver.Chrome("./chromedriver",options=chrome_options)
-		driver.get("https://www.pinterest.co.uk/search/pins/?q="+keyword.replace(" ","+"))
-		driver.execute_script("document.scrollingElement.scrollTo(0,500)")
-		driver.execute_script("document.scrollingElement.scrollTo(0,600)")
-		driver.execute_script("document.scrollingElement.scrollTo(0,600)")
-		time.sleep(1)
-		soup = BeautifulSoup(driver.page_source,"html.parser")
-		images = soup.find_all("img")
 
-		return images
-	return str(searchpinterest("newyork"))
+
+
+
+
+@app.route("/check_percentage")
+def check_per():
+	return {"percentage":open("per.txt","r").read().replace("\n","")}
+
+
+
+
 
 app.run(debug=True)

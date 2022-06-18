@@ -5,10 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>efeakaroz13 search tool</title>
+
 </head>
 <body>
-    <center>
-    	<input type="text" autocorrect="off" autofill="off" name="search" placeholder="Enter Something"><button>Search</button>
-    </center>
+	<h2>RSOR</h2>
+
+	<h5>Results:data.json</h5>
+	<select id="selected">
+
+		{% for d in data %}
+			<option>{{d}}</option>
+		{% endfor %}
+	</select>
+	<br><br>
+	<div id="wikipedia" style="display:none">
+		{% for d in data["wikipedia"] %}
+			<a style="margin:20px;" href="https://en.wikipedia.org/wiki/{{d|replace(' ','_')}}">{{d}}</a><br>
+		{% endfor %}
+	</div>
+
+	<div id="google" style="display:none">
+		{% for d in data["google"] %}
+			<a style="margin:20px;" href="{{d["url"]}}">{{d["title"]}}</a><br>
+			<a style="margin:20px;color:green" href="{{d["url"]}}">{{d["url"]}}</a><br><p></p>
+
+		{% endfor %}
+	</div>
+
+
+	<div id="yandex" style="display:none">
+		{% for d in data["yandex"] %}
+			<a style="margin:20px;" href="{{d["url"]}}">{{d["title"]}}</a><br>
+			<a style="margin:20px;color:green" href="{{d["url"]}}">{{d["url"]}}</a><br><p></p>
+
+		{% endfor %}
+	</div>
+
+	<div id="torch" style="display:none">
+		{% for d in data["torch"] %}
+			<a style="margin:20px;" href="{{d["url"]}}">{{d["title"]}}</a><br>
+			<a style="margin:20px;color:green" href="{{d["url"]}}">{{d["url"]}}</a><br><p></p>
+
+		{% endfor %}
+	</div>
+
+	<div id="pinterest" style="padding:20%;display:none">
+		{% for d in data["pinterest"] %}
+			<img src="{{d}}" width="100">
+
+
+
+		{% endfor %}
+	</div>
+	<div id="imggooglwe" style="padding:20%;display:none">
+		{% for d in data["imggoogle"] %}
+			<img src="{{d['image']}}" width="100">
+
+
+
+		{% endfor %}
+	</div>
+	<script src="/static/read.js"></script>
 </body>
 </html>
